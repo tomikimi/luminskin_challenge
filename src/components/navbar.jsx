@@ -1,6 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 
 const NavBar = () => {
+  const [state, setState] = useState(false);
+  const handleToggle = (state) => {
+    setState(!state);
+  };
   return (
     <React.Fragment>
       <div id="header" className="border-highlight bg-light">
@@ -10,7 +14,7 @@ const NavBar = () => {
           </a>
 
           {/* collapse on toggle button  */}
-          <div className="collapse">
+          <div className={state === false ? 'collapse' : 'collapse-toggle'}>
             <ul className="navbar-nav">
               <a href="#" className="nav-link">
                 Shop
@@ -22,9 +26,9 @@ const NavBar = () => {
           </div>
 
           {/* toggle button  */}
-          <button className="toggle-button">
+          <button onClick={() => handleToggle(state)} className="toggle-button">
             <span>
-              <i className="fas fa-bars"></i>
+              <i className="fa fa-bars"></i>
             </span>
           </button>
 
