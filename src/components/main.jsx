@@ -23,7 +23,9 @@ const Main = () => {
   useEffect(() => {
     if (data) {
       setCurrencies(data.currency);
-      formatProductsData(data.products);
+      // formatProductsData(data.products);
+      setProducts(data.products);
+      console.log(data.products);
     }
     if (dataPrice) {
       const result = handleUpdatePrice(dataPrice.products);
@@ -129,9 +131,12 @@ const Main = () => {
   // function to delete item from cart list
   const handleDelete = (itemID) => {
     let totalPrice;
-    const items = [...JSON.parse(localStorage.getItem('Cart'))];
+    let items = [...JSON.parse(localStorage.getItem('Cart'))];
     const item = items.filter((i) => i.id !== itemID);
     localStorage.setItem('Cart', JSON.stringify(item));
+    if (item.length === 0) {
+      setState(false);
+    }
     totalPrice = calcTotalPrice(item);
     setCart(item);
     setTotalPrice(totalPrice);
@@ -159,20 +164,25 @@ const Main = () => {
 
   // function to handle update of price
   const handleUpdate = (data) => {
+    let oldData;
     const newData = [...data];
-    const oldData = [...JSON.parse(localStorage.getItem('Cart'))];
-    oldData.forEach((element) => {
-      newData.forEach((el2) => {
-        if (element.id === el2.id) {
-          element.price = el2.price;
-          element.total = element.quantity * el2.price;
-        }
+    if (localStorage.getItem('Cart') === null) {
+      oldData = [];
+    } else {
+      oldData = [...JSON.parse(localStorage.getItem('Cart'))];
+      oldData.forEach((element) => {
+        newData.forEach((el2) => {
+          if (element.id === el2.id) {
+            element.price = el2.price;
+            element.total = element.quantity * el2.price;
+          }
+        });
       });
-    });
-    localStorage.setItem('Cart', JSON.stringify(oldData));
-    let totalPrice = calcTotalPrice(oldData);
-    setCart(oldData);
-    setTotalPrice(totalPrice);
+      localStorage.setItem('Cart', JSON.stringify(oldData));
+      let totalPrice = calcTotalPrice(oldData);
+      setCart(oldData);
+      setTotalPrice(totalPrice);
+    }
   };
 
   // function to hide cart overlay
@@ -220,38 +230,24 @@ const Main = () => {
       </section>
 
       <section id="products">
-        <div className="container products-details">
-          {products.map((product, index) => (
-            <div key={index} className="row mb-3">
-              {product.map((item, index) => (
-                <div key={index} className="col-3 mb-3">
-                  <div className="flex-item">
-                    <div className="d-flex">
-                      <img
-                        src={item.image_url}
-                        className="object-fit py"
-                        alt=""
-                      />
-                      <div className="px-1">
-                        <h3 className="text-title display-2 text-dark text-center">
-                          {item.title}
-                        </h3>
-                        <p className="text-center secondary-title text-secondary display-3">
-                          <span>
-                            from {currency} {item.price}
-                          </span>
-                        </p>
-                        <button
-                          onClick={() => addToCart(item)}
-                          className="btn btn-primary display-2 text-light mt-2"
-                        >
-                          Add to Cart
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+        <div className=" products container products-details">
+          {products.map((item, index) => (
+            <div class="product-card">
+              <div class="product-image">
+                <img src={item.image_url} />
+              </div>
+              <div class="product-info">
+                <h5>{item.title}</h5>
+                <h6>
+                  from {currency} {item.price}
+                </h6>
+                <button
+                  onClick={() => addToCart(item)}
+                  class="btn btn-primary display-2 text-light mt-2"
+                >
+                  Add to Cart
+                </button>
+              </div>
             </div>
           ))}
         </div>
