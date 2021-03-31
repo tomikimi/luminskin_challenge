@@ -14,6 +14,7 @@ const Cart = ({
   onChange,
 }) => {
   // let testImg = require('../assets/images/menu1.jpg');
+  console.log(state);
   return (
     <div className={state === true ? 'cart-overlay-visible' : 'cart-overlay'}>
       <div className="cart">
